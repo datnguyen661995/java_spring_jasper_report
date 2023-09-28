@@ -30,6 +30,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.datnguyen.jasper.report.domain.enums.ExportType.PDF;
+
 @Service
 public class ReportServiceImpl implements ReportService {
     private final TransactionService transactionService;
@@ -64,12 +66,12 @@ public class ReportServiceImpl implements ReportService {
         var dateTimeNow = LocalDateTime.now().format(formatter);
         var fileName = titleTransactionBy.replace(" ", "") + dateTimeNow;
 
-        if (exportType == ExportType.PDF) {
+        if (exportType == PDF) {
 
             JRPdfExporter exporter = new JRPdfExporter();
             exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
             exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(response.getOutputStream()));
-            response.setContentType("application/pdf");
+            response.setContentType(exportType.getContentType());
             response.setHeader(
                     HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName + ".pdf;");
             exporter.exportReport();
@@ -86,7 +88,8 @@ public class ReportServiceImpl implements ReportService {
             exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(response.getOutputStream()));
             response.setHeader(
                     HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName + ".xlsx;");
-            response.setContentType("application/octet-stream");
+//            response.setContentType("application/octet-stream");
+            response.setContentType(exportType.getContentType());
             exporter.exportReport();
 
         } else if (exportType == ExportType.CSV) {
@@ -97,7 +100,8 @@ public class ReportServiceImpl implements ReportService {
             exporter.setExporterOutput((new SimpleWriterExporterOutput(outputStream)));
             response.setHeader(
                     HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName + ".csv;");
-            response.setContentType("text/csv");
+//            response.setContentType("text/csv");
+            response.setContentType(exportType.getContentType());
             exporter.exportReport();
 
         } else if (exportType == ExportType.DOCX) {
@@ -107,7 +111,8 @@ public class ReportServiceImpl implements ReportService {
             exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(response.getOutputStream()));
             response.setHeader(
                     HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName + ".docx;");
-            response.setContentType("application/octet-stream");
+//            response.setContentType("application/octet-stream");
+            response.setContentType(exportType.getContentType());
             exporter.exportReport();
 
         } else {
