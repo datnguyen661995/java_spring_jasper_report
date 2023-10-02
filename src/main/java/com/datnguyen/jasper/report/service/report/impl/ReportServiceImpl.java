@@ -30,6 +30,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.datnguyen.jasper.report.domain.enums.ExportType.PDF;
+
 @Service
 public class ReportServiceImpl implements ReportService {
     private final TransactionService transactionService;
@@ -64,7 +66,7 @@ public class ReportServiceImpl implements ReportService {
         var dateTimeNow = LocalDateTime.now().format(formatter);
         var fileName = titleTransactionBy.replace(" ", "") + dateTimeNow;
 
-        if (exportType == ExportType.PDF) {
+        if (exportType == PDF) {
 
             JRPdfExporter exporter = new JRPdfExporter();
             exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
