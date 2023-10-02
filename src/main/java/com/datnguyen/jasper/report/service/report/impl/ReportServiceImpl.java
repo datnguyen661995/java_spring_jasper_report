@@ -41,7 +41,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public void downloadTransactionReport(ExportType exportType, HttpServletResponse response) throws JRException, IOException {
         List<Transaction> transactionList = transactionService.getTransactionList();
-        exportReport(transactionList,exportType,response);
+        exportReport(transactionList, exportType, response);
     }
 
     @Override
@@ -69,9 +69,9 @@ public class ReportServiceImpl implements ReportService {
             JRPdfExporter exporter = new JRPdfExporter();
             exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
             exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(response.getOutputStream()));
-            response.setContentType("application/pdf");
+            response.setContentType(exportType.getContentType());
             response.setHeader(
-                    HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName + ".pdf;");
+                    HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName + "." + exportType.getExtension() + ";");
             exporter.exportReport();
 
         } else if (exportType == ExportType.EXCEL) {
@@ -85,8 +85,8 @@ public class ReportServiceImpl implements ReportService {
             exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
             exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(response.getOutputStream()));
             response.setHeader(
-                    HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName + ".xlsx;");
-            response.setContentType("application/octet-stream");
+                    HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName + "." + exportType.getExtension() + ";");
+            response.setContentType(exportType.getContentType());
             exporter.exportReport();
 
         } else if (exportType == ExportType.CSV) {
@@ -96,8 +96,8 @@ public class ReportServiceImpl implements ReportService {
             var outputStream = response.getOutputStream();
             exporter.setExporterOutput((new SimpleWriterExporterOutput(outputStream)));
             response.setHeader(
-                    HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName + ".csv;");
-            response.setContentType("text/csv");
+                    HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName + "." + exportType.getExtension() + ";");
+            response.setContentType(exportType.getContentType());
             exporter.exportReport();
 
         } else if (exportType == ExportType.DOCX) {
@@ -106,8 +106,8 @@ public class ReportServiceImpl implements ReportService {
             exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
             exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(response.getOutputStream()));
             response.setHeader(
-                    HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName + ".docx;");
-            response.setContentType("application/octet-stream");
+                    HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName + "." + exportType.getExtension() + ";");
+            response.setContentType(exportType.getContentType());
             exporter.exportReport();
 
         } else {
